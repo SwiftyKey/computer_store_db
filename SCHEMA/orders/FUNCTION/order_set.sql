@@ -6,6 +6,7 @@ DECLARE
     v_id_status integer;
     v_ids       record;
     v_item      record;
+    v_now timestamptz;
 BEGIN
     PERFORM clients.client_check_exists(p_id_client);
 
@@ -19,8 +20,10 @@ BEGIN
         RAISE EXCEPTION 'Status % is not found', 'Принят';
     END IF;
 
-    INSERT INTO orders.t_order (id_client, id_status, c_address)
-    VALUES (p_id_client, v_id_status, p_address)
+    SELECT NOW() INTO v_now;
+    
+    INSERT INTO orders.t_order (id_client, id_status, c_address, c_placement_at)
+    VALUES (p_id_client, v_id_status, p_address, v_now)
     RETURNING id INTO v_id;
 
     FOR v_item IN
@@ -41,6 +44,11 @@ BEGIN
     WHERE id = v_id;
 
     RETURN v_id;
+EXCEPTION
+    WHEN unique_violation THEN
+        RAISE EXCEPTION 'order with id_client %, c_placement_at % already exists.', p_id_client, v_now;
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error adding order: %', sqlerrm;
 END;
 $$;
 

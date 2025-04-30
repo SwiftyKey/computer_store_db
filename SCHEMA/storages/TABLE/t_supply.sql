@@ -3,9 +3,9 @@ CREATE TABLE storages.t_supply (
 	id_supplier integer NOT NULL,
 	id_storage integer NOT NULL,
 	id_status integer NOT NULL,
-	c_dispatch_at timestamp with time zone NOT NULL,
+	c_dispatch_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	c_receipt_at timestamp with time zone,
-	c_total_cost numeric(10,2) NOT NULL
+	c_total_cost numeric(10,2) DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE storages.t_supply OWNER TO maindb;
