@@ -31,10 +31,6 @@ COMMENT ON COLUMN storages.t_inventory.c_event_type IS 'Действие над 
 
 --------------------------------------------------------------------------------
 
-CREATE INDEX ix_t_inventory_id_product_instance ON storages.t_inventory USING btree (id_product_instance);
-
---------------------------------------------------------------------------------
-
 CREATE INDEX ix_t_inventory_id_supply ON storages.t_inventory USING btree (id_supply);
 
 --------------------------------------------------------------------------------
@@ -70,4 +66,4 @@ ALTER TABLE storages.t_inventory
 --------------------------------------------------------------------------------
 
 ALTER TABLE storages.t_inventory
-	ADD CONSTRAINT uk_t_inventory_id_product_instance_id_supply UNIQUE (id_product_instance, id_supply);
+	ADD CONSTRAINT uk_t_inventory_id_product_instance UNIQUE (id_product_instance);

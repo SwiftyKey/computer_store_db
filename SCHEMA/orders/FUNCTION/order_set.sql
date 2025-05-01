@@ -6,7 +6,7 @@ DECLARE
     v_id_status integer;
     v_ids       record;
     v_item      record;
-    v_now timestamptz;
+    v_now       timestamptz;
 BEGIN
     PERFORM clients.client_check_exists(p_id_client);
 
@@ -21,7 +21,7 @@ BEGIN
     END IF;
 
     SELECT NOW() INTO v_now;
-    
+
     INSERT INTO orders.t_order (id_client, id_status, c_address, c_placement_at)
     VALUES (p_id_client, v_id_status, p_address, v_now)
     RETURNING id INTO v_id;
@@ -35,13 +35,19 @@ BEGIN
             FROM products.product_instance_get_free_many(v_item.id_product)
             LIMIT v_item.c_count;
 
+            SELECT storages.inventory_update(id, NULL, NULL, 'Moved')
+            FROM v_ids;
+
             INSERT INTO orders.t_order_info(id_order, id_product_instance, c_cost)
-            SELECT v_id, v_ids, v_item.c_batch_cost / v_item.c_count;
+            SELECT v_id, id, v_item.c_batch_cost / v_item.c_count
+            FROM v_ids;
         END LOOP;
 
     UPDATE orders.t_order
     SET id_status = orders.order_status_next(v_id_status)
     WHERE id = v_id;
+
+    PERFORM clients.basket_clear(p_id_client);
 
     RETURN v_id;
 EXCEPTION

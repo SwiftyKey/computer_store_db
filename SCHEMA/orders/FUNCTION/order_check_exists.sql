@@ -1,17 +1,14 @@
 CREATE OR REPLACE FUNCTION orders.order_check_exists(p_id integer) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
-DECLARE
-    v_count integer;
 BEGIN
-    SELECT COUNT(*)
-    INTO v_count
-    FROM orders.t_order
-    WHERE id = p_id
-        FOR UPDATE;
-
-    IF v_count = 0 THEN
-        RAISE EXCEPTION 'Заказ с id % не существует', p_id;
+    IF NOT EXISTS(
+        SELECT 1
+        FROM orders.t_order
+        WHERE id = p_id
+        FOR UPDATE
+    ) THEN
+        RAISE EXCEPTION 'Order with id % does not exists', p_id;
     END IF;
 END;
 $$;

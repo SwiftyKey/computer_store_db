@@ -1,8 +1,8 @@
-CREATE OR REPLACE FUNCTION storages.inventory_update(p_id integer, p_wholesale_price numeric, p_condition text, p_event_type text) RETURNS void
+CREATE OR REPLACE FUNCTION storages.inventory_update(p_id_product_instance integer, p_wholesale_price numeric, p_condition text, p_event_type text) RETURNS void
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 BEGIN
-    PERFORM storages.inventory_check_exists(p_id);
+    PERFORM products.product_instance_check_exists(p_id_product_instance);
 
     LOCK TABLE storages.t_inventory IN ROW EXCLUSIVE MODE;
 
@@ -10,20 +10,14 @@ BEGIN
     SET c_wholesale_price = COALESCE(p_wholesale_price, c_wholesale_price),
         c_condition       = COALESCE(p_condition, c_condition),
         c_event_type      = COALESCE(p_event_type, c_event_type)
-    WHERE id = p_id;
+    WHERE id_product_instance = p_id_product_instance;
 
 EXCEPTION
     WHEN check_violation THEN
-        RAISE EXCEPTION 'Invalid inventory data.';
+        RAISE EXCEPTION 'Invalid inventory data: %', sqlerrm;
     WHEN OTHERS THEN
         RAISE EXCEPTION 'Error updating inventory: %', sqlerrm;
 END;
 $$;
 
-ALTER FUNCTION storages.inventory_update(p_id integer, p_wholesale_price numeric, p_condition text, p_event_type text) OWNER TO maindb;
-
-REVOKE ALL ON FUNCTION storages.inventory_update(p_id integer, p_wholesale_price numeric, p_condition text, p_event_type text) FROM PUBLIC;
-
-GRANT ALL ON FUNCTION storages.inventory_update(p_id integer, p_wholesale_price numeric, p_condition text, p_event_type text) TO program_service;
-
-GRANT ALL ON FUNCTION storages.inventory_update(p_id integer, p_wholesale_price numeric, p_condition text, p_event_type text) TO admin_service;
+ALTER FUNCTION storages.inventory_update(p_id_product_instance integer, p_wholesale_price numeric, p_condition text, p_event_type text) OWNER TO maindb;
