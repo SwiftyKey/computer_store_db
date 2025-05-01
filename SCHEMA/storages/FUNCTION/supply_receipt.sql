@@ -2,7 +2,10 @@ CREATE OR REPLACE FUNCTION storages.supply_receipt(p_id integer, p_receipt_at ti
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 DECLARE
-    v_id_status integer;
+    v_id_status           integer;
+    item                  record;
+    v_id_product_instance integer;
+    v_wholesale_price     numeric;
 BEGIN
     PERFORM storages.supply_check_exists(p_id);
 
@@ -19,9 +22,28 @@ BEGIN
     LOCK TABLE storages.t_supply IN ROW EXCLUSIVE MODE;
 
     UPDATE storages.t_supply
-    SET id_status     = v_id_status,
-        c_receipt_at  = p_receipt_at
+    SET id_status    = v_id_status,
+        c_receipt_at = p_receipt_at
     WHERE id = p_id;
+
+    FOR item IN
+        SELECT id_product AS id, c_count AS count, c_batch_cost AS batch_cost
+        FROM storages.t_supply_info AS info
+        WHERE info.id_supply = p_id
+        LOOP
+            FOR i IN 1..item.count
+                LOOP
+                    v_id_product_instance := products.product_instance_set(
+                            item.id,
+                            CONCAT(p_id, '.', item.id, '.', i)
+                                             );
+                    v_wholesale_price := item.batch_cost / item.count;
+                    PERFORM storages.inventory_set(v_id_product_instance, p_id, v_wholesale_price);
+                END LOOP;
+        END LOOP;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error updating supply: %', sqlerrm;
 END;
 $$;
 
