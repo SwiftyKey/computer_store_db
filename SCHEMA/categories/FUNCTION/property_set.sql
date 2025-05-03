@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION categories.property_set(p_name text, p_type text, p_i
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 DECLARE
-    id INTEGER;
+    v_id INTEGER;
 BEGIN
     PERFORM categories.unit_check_exists(p_id_unit);
 
@@ -10,9 +10,9 @@ BEGIN
 
     INSERT INTO categories.t_property (c_name, c_type, id_unit)
     VALUES (p_name, p_type, p_id_unit)
-    RETURNING id INTO id;
+    RETURNING id INTO v_id;
 
-    RETURN id;
+    RETURN v_id;
 EXCEPTION
     WHEN unique_violation THEN
         RAISE EXCEPTION 'Property with name % already exists.', p_name;
