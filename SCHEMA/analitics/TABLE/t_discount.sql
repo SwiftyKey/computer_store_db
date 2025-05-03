@@ -38,10 +38,6 @@ CREATE INDEX ix_t_discount_c_type_c_id_object ON analitics.t_discount USING btre
 
 --------------------------------------------------------------------------------
 
-CREATE INDEX ix_t_discount_c_type_c_id_object_c_is_active ON analitics.t_discount USING btree (c_type, c_id_object, c_is_active);
-
---------------------------------------------------------------------------------
-
 ALTER TABLE analitics.t_discount
 	ADD CONSTRAINT ch_t_discount_c_id_object_value CHECK ((c_id_object >= 0));
 
@@ -63,4 +59,4 @@ ALTER TABLE analitics.t_discount
 --------------------------------------------------------------------------------
 
 ALTER TABLE analitics.t_discount
-	ADD CONSTRAINT uk_t_discount_type_id_object_discount_is_active_start_at UNIQUE (c_type, c_id_object, c_discount, c_is_active, c_start_at);
+	ADD CONSTRAINT uk_t_discount_c_type_id_object_c_is_active UNIQUE (c_type, c_id_object, c_is_active);
