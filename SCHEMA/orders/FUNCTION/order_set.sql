@@ -7,6 +7,9 @@ DECLARE
     v_ids       record;
     v_item      record;
     v_now       timestamptz;
+    v_discount numeric;
+    v_product_discount numeric;
+    v_client_discount numeric;
 BEGIN
     PERFORM clients.client_check_exists(p_id_client);
 
@@ -26,6 +29,8 @@ BEGIN
     VALUES (p_id_client, v_id_status, p_address, v_now)
     RETURNING id INTO v_id;
 
+    v_client_discount := clients.client_get_discount(p_id_client);
+
     FOR v_item IN
         SELECT id_product, c_count, c_batch_cost
         FROM clients.basket_get(p_id_client)
@@ -38,8 +43,15 @@ BEGIN
             SELECT storages.inventory_update(id, NULL, NULL, 'Moved')
             FROM v_ids;
 
+            v_product_discount := analitics.get_product_discount(
+                    ARRAY['Product', 'Category', 'Model'],
+                    v_item.id_product
+            );
+
+            v_discount := COALESCE(v_product_discount, v_client_discount);
+
             INSERT INTO orders.t_order_info(id_order, id_product_instance, c_cost)
-            SELECT v_id, id, v_item.c_batch_cost / v_item.c_count
+            SELECT v_id, id, (v_item.c_batch_cost / v_item.c_count * (1 - v_discount))
             FROM v_ids;
         END LOOP;
 

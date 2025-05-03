@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION clients.client_update(p_id integer, p_name text = NULL::text, p_phone text = NULL::text, p_personal_discount numeric = NULL::numeric, p_money_spent numeric = NULL::numeric) RETURNS void
+CREATE OR REPLACE FUNCTION clients.client_update(p_id integer, p_name text = NULL::text, p_phone text = NULL::text, p_money_spent numeric = NULL::numeric) RETURNS void
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -9,7 +9,6 @@ BEGIN
     UPDATE clients.t_client
     SET c_name              = COALESCE(p_name, c_name),
         c_phone             = COALESCE(p_phone, c_phone),
-        c_personal_discount = COALESCE(p_personal_discount, c_personal_discount),
         c_money_spent       = COALESCE(p_money_spent, c_money_spent)
     WHERE id = p_id;
 
@@ -24,10 +23,10 @@ EXCEPTION
 END;
 $$;
 
-ALTER FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_personal_discount numeric, p_money_spent numeric) OWNER TO maindb;
+ALTER FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_money_spent numeric) OWNER TO maindb;
 
-GRANT ALL ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_personal_discount numeric, p_money_spent numeric) TO program_service;
+GRANT ALL ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_money_spent numeric) TO program_service;
 
-GRANT ALL ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_personal_discount numeric, p_money_spent numeric) TO admin_service;
+GRANT ALL ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_money_spent numeric) TO admin_service;
 
-COMMENT ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_personal_discount numeric, p_money_spent numeric) IS 'Обновляет информацию о существующем клиенте в таблице t_client.';
+COMMENT ON FUNCTION clients.client_update(p_id integer, p_name text, p_phone text, p_money_spent numeric) IS 'Обновляет информацию о существующем клиенте в таблице t_client.';

@@ -15,7 +15,8 @@ BEGIN
     END IF;
 
     PERFORM products.product_check_exists(p_id_object);
-
+    PERFORM analitics.objects_status_update(NOW());
+    
     FOREACH v_type IN ARRAY p_path
     LOOP
         v_id_object := CASE v_type
