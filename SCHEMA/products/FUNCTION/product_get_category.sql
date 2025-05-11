@@ -11,6 +11,7 @@ BEGIN
     FROM products.t_product as p JOIN
         products.t_product_property as pp ON p.id = pp.id_product JOIN
         categories.t_category_property cp ON pp.id_category_property = cp.id
+    WHERE p.id = p_id
     FOR UPDATE;
 
     RETURN v_id;

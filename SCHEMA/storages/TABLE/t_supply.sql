@@ -5,7 +5,7 @@ CREATE TABLE storages.t_supply (
 	id_status integer NOT NULL,
 	c_dispatch_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	c_receipt_at timestamp with time zone,
-	c_total_cost numeric(10,2) DEFAULT 0 NOT NULL
+	c_total_cost numeric(10,2)
 );
 
 ALTER TABLE storages.t_supply OWNER TO maindb;
@@ -52,7 +52,7 @@ ALTER TABLE storages.t_supply
 --------------------------------------------------------------------------------
 
 ALTER TABLE storages.t_supply
-	ADD CONSTRAINT ch_t_shipment_c_total_cost_value CHECK ((c_total_cost > (0)::numeric));
+	ADD CONSTRAINT ch_t_shipment_c_total_cost_value CHECK (((c_total_cost IS NULL) OR (c_total_cost > (0)::numeric)));
 
 --------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ ALTER TABLE storages.t_supply
 --------------------------------------------------------------------------------
 
 ALTER TABLE storages.t_supply
-	ADD CONSTRAINT pk_t_shipment PRIMARY KEY (id);
+	ADD CONSTRAINT pk_t_supply PRIMARY KEY (id);
 
 --------------------------------------------------------------------------------
 

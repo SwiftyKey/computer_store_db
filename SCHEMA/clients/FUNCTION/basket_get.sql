@@ -5,8 +5,8 @@ BEGIN
     PERFORM clients.client_check_exists(p_id_client);
 
     RETURN QUERY
-        SELECT id_product, c_count, c_batch_cost
-        FROM clients.t_basket_info
+        SELECT bi.id_product, bi.c_count, bi.c_batch_cost
+        FROM clients.t_basket_info bi
         WHERE id_client = p_id_client
             FOR UPDATE;
 

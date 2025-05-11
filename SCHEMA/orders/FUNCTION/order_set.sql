@@ -2,14 +2,17 @@ CREATE OR REPLACE FUNCTION orders.order_set(p_id_client integer, p_address text)
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 DECLARE
-    v_id        integer;
-    v_id_status integer;
-    v_ids       record;
-    v_item      record;
-    v_now       timestamptz;
-    v_discount numeric;
+    v_id               integer;
+    v_id_status        integer;
+    v_item             record;
+    v_now              timestamptz;
+    v_discount         numeric;
     v_product_discount numeric;
-    v_client_discount numeric;
+    v_client_discount  numeric;
+    v_total_price      numeric;
+    v_price            numeric;
+    instance_cursor    refcursor;
+    v_instance_id      int;
 BEGIN
     PERFORM clients.client_check_exists(p_id_client);
 
@@ -35,28 +38,33 @@ BEGIN
         SELECT id_product, c_count, c_batch_cost
         FROM clients.basket_get(p_id_client)
         LOOP
-            SELECT id
-            INTO v_ids
-            FROM products.product_instance_get_free_many(v_item.id_product)
-            LIMIT v_item.c_count;
+            OPEN instance_cursor FOR SELECT id
+                                     FROM products.product_instance_get_free_many(v_item.id_product)
+                                     LIMIT v_item.c_count;
+            LOOP
+                FETCH instance_cursor INTO v_instance_id;
+                EXIT WHEN v_instance_id IS NULL;
 
-            SELECT storages.inventory_update(id, NULL, NULL, 'Moved')
-            FROM v_ids;
+                PERFORM storages.inventory_update(v_instance_id, NULL, NULL, 'Moved');
 
-            v_product_discount := analitics.get_product_discount(
-                    ARRAY['Product', 'Category', 'Model'],
-                    v_item.id_product
-            );
+                v_product_discount := analitics.get_product_discount(
+                        ARRAY ['Product', 'Category', 'Model'],
+                        v_item.id_product
+                                      );
+                v_discount := COALESCE(v_product_discount, v_client_discount);
+                v_price := v_item.c_batch_cost / v_item.c_count * (1 - v_discount);
+                v_total_price := v_total_price + v_price;
 
-            v_discount := COALESCE(v_product_discount, v_client_discount);
+                INSERT INTO orders.t_order_info(id_order, id_product_instance, c_cost)
+                VALUES (v_id, v_instance_id, v_price);
+            END LOOP;
 
-            INSERT INTO orders.t_order_info(id_order, id_product_instance, c_cost)
-            SELECT v_id, id, (v_item.c_batch_cost / v_item.c_count * (1 - v_discount))
-            FROM v_ids;
+            CLOSE instance_cursor;
         END LOOP;
 
     UPDATE orders.t_order
-    SET id_status = orders.order_status_next(v_id_status)
+    SET id_status = orders.order_status_next(v_id_status),
+        c_total_price = v_total_price
     WHERE id = v_id;
 
     PERFORM clients.basket_clear(p_id_client);

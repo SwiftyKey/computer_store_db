@@ -6,12 +6,13 @@ DECLARE
 BEGIN
     PERFORM products.product_check_exists(p_id_product);
 
-    SELECT id
+    SELECT pi.id
     INTO v_id
-    FROM products.t_product_instance
-    WHERE id_product = p_id_product
-    LIMIT 1
-    FOR UPDATE;
+    FROM products.t_product_instance pi
+             JOIN storages.t_inventory ti ON pi.id = ti.id_product_instance
+    WHERE pi.id_product = p_id_product
+      AND ti.c_event_type NOT IN ('Sold', 'Scrapped')
+    LIMIT 1 FOR UPDATE;
 
     IF v_id IS NULL THEN
         RAISE EXCEPTION 'There are no available product instance with id_product %', p_id_product;

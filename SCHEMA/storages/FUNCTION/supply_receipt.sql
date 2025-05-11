@@ -12,11 +12,11 @@ BEGIN
     SELECT id
     INTO v_id_status
     FROM storages.t_supply_status
-    WHERE c_name = 'Принят'
+    WHERE c_name = 'Получен'
         FOR UPDATE;
 
     IF v_id_status IS NULL THEN
-        RAISE EXCEPTION 'Status % is not found', 'Принят';
+        RAISE EXCEPTION 'Status % is not found', 'Получен';
     END IF;
 
     LOCK TABLE storages.t_supply IN ROW EXCLUSIVE MODE;

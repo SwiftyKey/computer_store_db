@@ -11,11 +11,7 @@ BEGIN
                       FOR UPDATE)
     INTO v_exists;
 
-    IF NOT v_exists THEN
-        RAISE EXCEPTION 'Basket info with id_client % and id_product % does not exist.', p_id_client, p_id_product;
-    END IF;
-
-    RETURN TRUE;
+    RETURN v_exists;
 END;
 $$;
 

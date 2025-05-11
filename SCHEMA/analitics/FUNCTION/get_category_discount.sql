@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION analitics.get_category_discount(p_id integer) RETURNS
     AS $$
 DECLARE
     v_discount numeric;
-    v_cur record;
+    v_cur integer;
     v_path integer[];
 BEGIN
     PERFORM categories.category_check_exists(p_id);

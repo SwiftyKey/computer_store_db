@@ -2,7 +2,7 @@ CREATE TABLE orders.t_order (
 	id integer DEFAULT nextval('orders.t_order_id_seq'::regclass) NOT NULL,
 	id_client integer NOT NULL,
 	id_status integer NOT NULL,
-	c_total_price numeric(10,2) DEFAULT 0 NOT NULL,
+	c_total_price numeric(10,2),
 	c_placement_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	c_exec_at timestamp with time zone,
 	c_address text NOT NULL
@@ -43,7 +43,7 @@ CREATE INDEX ix_t_order_id_status ON orders.t_order USING btree (id_status);
 --------------------------------------------------------------------------------
 
 ALTER TABLE orders.t_order
-	ADD CONSTRAINT ch_t_order_c_total_price_value CHECK ((c_total_price > (0)::numeric));
+	ADD CONSTRAINT ch_t_order_c_total_price_value CHECK (((c_total_price IS NULL) OR (c_total_price > (0)::numeric)));
 
 --------------------------------------------------------------------------------
 

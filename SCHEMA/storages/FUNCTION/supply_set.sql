@@ -28,13 +28,13 @@ BEGIN
     RETURNING id INTO v_id;
 
     FOR item IN
-        SELECT * FROM json_populate_recordset(null::ty_supply_item, p_items)
+        SELECT * FROM json_populate_recordset(null::public.ty_supply_item, p_items)
     LOOP
         IF item.count IS NULL OR item.count <= 0 THEN
 			RAISE EXCEPTION 'The delivery must contain a positive quantity of product with id: %', item.id;
 		END IF;
 
-        v_batch_cost := item.count * item.cost;
+        v_batch_cost := item.count * item.c_cost;
         v_total_cost := v_total_cost + v_batch_cost;
 
         INSERT INTO storages.t_supply_info(id_product, id_supply, c_count, c_batch_cost)

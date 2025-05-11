@@ -6,7 +6,7 @@ DECLARE
     v_id_object integer;
     v_type text;
 BEGIN
-    IF length(p_path) NOT BETWEEN 1 AND 3 THEN
+    IF array_length(p_path, 1) NOT BETWEEN 1 AND 3 THEN
         RAISE EXCEPTION 'p_path length must be between (1, 3)';
     END IF;
 
