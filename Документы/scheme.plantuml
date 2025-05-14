@@ -1,0 +1,179 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class t_basket_info {
+   id_client: integer
+   id_product: integer
+   c_count: integer
+   c_batch_cost: numeric(10,2)
+   id: integer
+}
+class t_category {
+   id_parent: integer
+   c_name: text
+   c_path: text
+   id: integer
+}
+class t_category_property {
+   id_category: integer
+   id_property: integer
+   id: integer
+}
+class t_client {
+   c_name: text
+   c_phone: text
+   c_money_spent: numeric(10,2)
+   id: integer
+}
+class t_discount {
+   c_type: text
+   c_id_object: integer
+   c_discount: numeric(2,2)
+   c_is_active: boolean
+   c_start_at: timestamp with time zone
+   c_end_at: timestamp with time zone
+   id: integer
+}
+class t_grade {
+   c_type: text
+   c_id_object: integer
+   c_cur_grade: double precision
+   c_cur_grades_count: integer
+   c_grade_at: timestamp with time zone
+   id: integer
+}
+class t_inventory {
+   id_product_instance: integer
+   id_supply: integer
+   c_wholesale_price: numeric(10,2)
+   c_condition: text
+   c_event_type: text
+   id: integer
+}
+class t_manufacturer {
+   c_name: text
+   c_address: text
+   id: integer
+}
+class t_model {
+   id_manufacturer: integer
+   c_name: text
+   id: integer
+}
+class t_order {
+   id_client: integer
+   id_status: integer
+   c_total_price: numeric(10,2)
+   c_placement_at: timestamp with time zone
+   c_exec_at: timestamp with time zone
+   c_address: text
+   id: integer
+}
+class t_order_info {
+   id_order: integer
+   id_product_instance: integer
+   c_cost: numeric(10,2)
+   c_grade: integer
+   id: integer
+}
+class t_order_status {
+   id_next: integer
+   c_name: text
+   id: integer
+}
+class t_product {
+   id_model: integer
+   c_name: text
+   c_description: text
+   c_warranty_period: integer
+   c_length: double precision
+   c_width: double precision
+   c_height: double precision
+   c_weight: double precision
+   c_price: numeric(10,2)
+   c_sku: text
+   c_gtin: text
+   id: integer
+}
+class t_product_instance {
+   id_product: integer
+   c_serial_number: text
+   id: integer
+}
+class t_product_property {
+   id_product: integer
+   id_category_property: integer
+   c_value: text
+   id: integer
+}
+class t_property {
+   c_name: text
+   c_type: text
+   id_unit: integer
+   id: integer
+}
+class t_storage {
+   c_name: text
+   c_address: text
+   id: integer
+}
+class t_supplier {
+   c_name: text
+   c_address: text
+   c_phone: text
+   id: integer
+}
+class t_supply {
+   id_supplier: integer
+   id_storage: integer
+   id_status: integer
+   c_dispatch_at: timestamp with time zone
+   c_receipt_at: timestamp with time zone
+   c_total_cost: numeric(10,2)
+   id: integer
+}
+class t_supply_info {
+   id_product: integer
+   id_supply: integer
+   c_count: integer
+   c_batch_cost: numeric(10,2)
+   id: integer
+}
+class t_supply_status {
+   id_next: integer
+   c_name: text
+   id: integer
+}
+class t_unit {
+   c_unit: text
+   id: integer
+}
+
+t_basket_info        -[#595959,plain]-^  t_client            : "id_client:id"
+t_basket_info        -[#595959,plain]-^  t_product           : "id_product:id"
+t_category           -[#595959,plain]-^  t_category          : "id_parent:id"
+t_category_property  -[#595959,plain]-^  t_category          : "id_category:id"
+t_category_property  -[#595959,plain]-^  t_property          : "id_property:id"
+t_inventory          -[#595959,plain]-^  t_product_instance  : "id_product_instance:id"
+t_inventory          -[#595959,plain]-^  t_supply            : "id_supply:id"
+t_model              -[#595959,plain]-^  t_manufacturer      : "id_manufacturer:id"
+t_order              -[#595959,plain]-^  t_client            : "id_client:id"
+t_order              -[#595959,plain]-^  t_order_status      : "id_status:id"
+t_order_info         -[#595959,plain]-^  t_order             : "id_order:id"
+t_order_info         -[#595959,plain]-^  t_product_instance  : "id_product_instance:id"
+t_order_status       -[#595959,plain]-^  t_order_status      : "id_next:id"
+t_product            -[#595959,plain]-^  t_model             : "id_model:id"
+t_product_instance   -[#595959,plain]-^  t_product           : "id_product:id"
+t_product_property   -[#595959,plain]-^  t_category_property : "id_category_property:id"
+t_product_property   -[#595959,plain]-^  t_product           : "id_product:id"
+t_property           -[#595959,plain]-^  t_unit              : "id_unit:id"
+t_supply             -[#595959,plain]-^  t_storage           : "id_storage:id"
+t_supply             -[#595959,plain]-^  t_supplier          : "id_supplier:id"
+t_supply             -[#595959,plain]-^  t_supply_status     : "id_status:id"
+t_supply_info        -[#595959,plain]-^  t_product           : "id_product:id"
+t_supply_info        -[#595959,plain]-^  t_supply            : "id_supply:id"
+t_supply_status      -[#595959,plain]-^  t_supply_status     : "id_next:id"
+@enduml
