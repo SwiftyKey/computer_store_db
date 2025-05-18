@@ -3,7 +3,8 @@ CREATE TABLE clients.t_basket_info (
 	id_client integer NOT NULL,
 	id_product integer NOT NULL,
 	c_count integer DEFAULT 1 NOT NULL,
-	c_batch_cost numeric(10,2) NOT NULL
+	c_batch_cost numeric(10,2) NOT NULL,
+	c_discount numeric DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE clients.t_basket_info OWNER TO maindb;
@@ -23,6 +24,8 @@ COMMENT ON COLUMN clients.t_basket_info.id_product IS 'Уникальный ид
 COMMENT ON COLUMN clients.t_basket_info.c_count IS 'Количество товара';
 
 COMMENT ON COLUMN clients.t_basket_info.c_batch_cost IS 'Цена за количество товара';
+
+COMMENT ON COLUMN clients.t_basket_info.c_discount IS 'Скидка на товар';
 
 --------------------------------------------------------------------------------
 

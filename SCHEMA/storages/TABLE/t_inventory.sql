@@ -4,7 +4,8 @@ CREATE TABLE storages.t_inventory (
 	id_supply integer NOT NULL,
 	c_wholesale_price numeric(10,2) NOT NULL,
 	c_condition text DEFAULT 'New'::text NOT NULL,
-	c_event_type text DEFAULT 'Received'::text NOT NULL
+	c_event_type text DEFAULT 'Received'::text NOT NULL,
+	c_upd_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE storages.t_inventory OWNER TO maindb;

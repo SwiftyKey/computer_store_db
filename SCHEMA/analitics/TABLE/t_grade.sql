@@ -57,8 +57,3 @@ ALTER TABLE analitics.t_grade
 
 ALTER TABLE analitics.t_grade
 	ADD CONSTRAINT pk_t_grade PRIMARY KEY (id);
-
---------------------------------------------------------------------------------
-
-ALTER TABLE analitics.t_grade
-	ADD CONSTRAINT uk_t_grade_c_type_c_id_object_c_grade_at UNIQUE (c_type, c_id_object, c_grade_at);
