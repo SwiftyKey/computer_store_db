@@ -9521,6 +9521,15 @@
 								"$ref": "AAAAAAGV3Fn/Xwhxaew="
 							},
 							"name": "c_batch_cost"
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAGW5DnMlydUWGk=",
+							"_parent": {
+								"$ref": "AAAAAAGV3Fn/Xwhxaew="
+							},
+							"name": "c_discount",
+							"length": 0
 						}
 					]
 				},
@@ -23915,20 +23924,35 @@
 											"top": 381,
 											"width": 103.0908203125,
 											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGW5DnMpCdXX+c=",
+											"_parent": {
+												"$ref": "AAAAAAGWUtnFmwIX7Ps="
+											},
+											"model": {
+												"$ref": "AAAAAAGW5DnMlydUWGk="
+											},
+											"font": "Arial;13;0",
+											"left": 1229,
+											"top": 396,
+											"width": 103.0908203125,
+											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1224,
 									"top": 359,
 									"width": 113.0908203125,
-									"height": 40
+									"height": 55
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 1224,
 							"top": 336,
 							"width": 113.0908203125,
-							"height": 63,
+							"height": 78,
 							"nameLabel": {
 								"$ref": "AAAAAAGWUtnFmwIWRgc="
 							},
