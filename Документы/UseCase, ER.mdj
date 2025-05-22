@@ -4506,20 +4506,35 @@
 											"top": 416,
 											"width": 238.1943359375,
 											"height": 13
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAGW9gcgY8ohyCc=",
+											"_parent": {
+												"$ref": "AAAAAAGV3Fn/Xwh1cYY="
+											},
+											"model": {
+												"$ref": "AAAAAAGW5DnMlydUWGk="
+											},
+											"font": "Arial;13;0",
+											"left": 1341,
+											"top": 431,
+											"width": 238.1943359375,
+											"height": 13
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 1336,
 									"top": 351,
 									"width": 248.1943359375,
-									"height": 83
+									"height": 98
 								}
 							],
 							"font": "Arial;13;0",
 							"left": 1336,
 							"top": 328,
 							"width": 248.1943359375,
-							"height": 106,
+							"height": 121,
 							"nameLabel": {
 								"$ref": "AAAAAAGV3Fn/Xwh0ib4="
 							},
